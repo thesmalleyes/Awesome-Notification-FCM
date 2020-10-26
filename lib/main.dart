@@ -1,42 +1,18 @@
 import 'dart:developer';
 
-import 'package:awesome_notification_example_fcm/firebase_config.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:awesome_notifications/awesome_notifications.dart';
 
-Future<dynamic> myBackgroundMessageHandler(Map<String, dynamic> message) async {
-  if (message.containsKey('data')) {
-    // Handle data message
-    final dynamic data = message['data'];
-    AwesomeNotifications().createNotification(
-      content: NotificationContent(
-          id: 10,
-          channelKey: 'basic_channel',
-          title: data['title'],
-          body: data['body']
-      )
-    );
-  }
-
-  if (message.containsKey('notification')) {
-    // Handle notification message
-    final dynamic notification = message['notification'];
-    print(notification);
-  }
-}
 
 void initializeApp() async{
-  await Firebase.initializeApp();
-  await FirebaseConfig().handleBox();
   AwesomeNotifications().initialize(
-    'resource://drawable/app_icon',
+    null, // this makes you use your default icon, if you haven't one
     [
         NotificationChannel(
             channelKey: 'basic_channel',
             channelName: 'Basic notifications',
             channelDescription: 'Notification channel for basic tests',
-            defaultColor: Color(0xFF9D50DD),
+            defaultColor: Colors.blueAccent,
             ledColor: Colors.white
         )
     ]
@@ -85,6 +61,8 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
+
+  String _firebaseAppToken = '';
   int _counter = 0;
 
   void _incrementCounter() {
@@ -95,18 +73,71 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   void initState() {
+
+    // Here you ensure to request the user permission, but do not do so
+    // directly. Ask the user permission before in a personalized pop up dialog
+    // this is more friendly to the user
     AwesomeNotifications().isNotificationAllowed().then((isAllowed) {
       if (!isAllowed) {
         AwesomeNotifications().requestPermissionToSendNotifications();
       }
     });
+
+    // Here you get the token every time its changed by firebase process or by a new installation
+    AwesomeNotifications().fcmTokenStream.listen((String FCMtoken) {
+      print(FCMtoken);
+    });
+
     AwesomeNotifications().actionStream.listen(
         (receivedNotification){
           log("Awesome Notification");
           print(receivedNotification.toString());
         }
     );
+
+    initializeFirebaseService();
+
     super.initState();
+  }
+
+  Future<void> initializeFirebaseService() async {
+    String firebaseAppToken;
+    bool isFirebaseAvailable;
+
+    // Platform messages may fail, so we use a try/catch PlatformException.
+    try {
+      isFirebaseAvailable = await AwesomeNotifications().isFirebaseAvailable;
+
+      if(isFirebaseAvailable){
+        try {
+          firebaseAppToken = await AwesomeNotifications().firebaseAppToken;
+          debugPrint('Firebase token: $firebaseAppToken');
+        } on Exception {
+          firebaseAppToken = 'failed';
+          debugPrint('Firebase failed to get token');
+        }
+      }
+      else {
+        firebaseAppToken = 'unavailable';
+        debugPrint('Firebase is not available on this project');
+      }
+
+    } on Exception {
+      isFirebaseAvailable = false;
+      firebaseAppToken = 'Firebase is not available on this project';
+    }
+
+    // If the widget was removed from the tree while the asynchronous platform
+    // message was in flight, we want to discard the reply rather than calling
+    // setState to update our non-existent appearance.
+    if (!mounted){
+      _firebaseAppToken = firebaseAppToken;
+      return;
+    }
+
+    setState(() {
+      _firebaseAppToken = firebaseAppToken;
+    });
   }
 
   @override

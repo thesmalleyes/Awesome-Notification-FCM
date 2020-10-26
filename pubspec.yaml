@@ -24,9 +24,10 @@ dependencies:
   flutter:
     sdk: flutter
   cupertino_icons: ^1.0.0
-  firebase_core: ^0.5.0+1
-  firebase_messaging: ^7.0.3
+
+  # Plugins to send notifications
   awesome_notifications: ^0.0.4+1
+  giffy_dialog: ^1.8.0
 
 dev_dependencies:
   flutter_test:

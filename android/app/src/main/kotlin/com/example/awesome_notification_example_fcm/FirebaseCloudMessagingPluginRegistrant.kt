@@ -1,5 +1,5 @@
 package com.example.awesome_notification_example_fcm
-
+/*
 import io.flutter.plugin.common.PluginRegistry
 import io.flutter.plugins.firebasemessaging.FirebaseMessagingPlugin
 
@@ -20,3 +20,4 @@ object FirebaseCloudMessagingPluginRegistrant {
         return false
     }
 }
+*/
