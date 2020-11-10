@@ -1,4 +1,4 @@
-name: awesome_notification_example_fcm
+name: awesome_notification_fcm
 description: A new Flutter project.
 
 # The following line prevents the package from being accidentally published to
@@ -45,4 +45,5 @@ flutter:
 
   assets:
     - assets/images/placeholder.gif
+    - assets/images/animated-bell.gif
     - assets/images/balloons-in-sky.jpg

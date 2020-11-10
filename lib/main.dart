@@ -1,6 +1,6 @@
 import 'dart:developer';
 
-import 'package:awesome_notification_example_fcm/routes.dart';
+import 'package:awesome_notification_fcm/routes.dart';
 import 'package:flutter/material.dart';
 import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:giffy_dialog/giffy_dialog.dart';
