@@ -26,7 +26,7 @@ dependencies:
   cupertino_icons: ^1.0.0
 
   # Plugins to send notifications
-  awesome_notifications: ^0.0.5
+  awesome_notifications: ^0.0.5+1
   progressive_image: ^1.0.1
   giffy_dialog: ^1.8.0
 
